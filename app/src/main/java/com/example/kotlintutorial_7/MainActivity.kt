@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate: done")
 
     }
+
     companion object {
         private class  DownloadData : AsyncTask<String, Void, String>(){
             private val TAG = "DownloadData"
