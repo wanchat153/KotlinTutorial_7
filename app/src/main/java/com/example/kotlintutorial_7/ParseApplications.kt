@@ -1,6 +1,7 @@
 package com.example.kotlintutorial_7
 
 import android.util.Log
+import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.lang.Exception
@@ -23,8 +24,44 @@ class ParseApplications {
             xpp.setInput(xmlData.reader())
             var eventType = xpp.eventType
             var currentRecord = FeedEntry()
-            while (eventType != XmlPullParser.END_DOCUMENT){
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                val tagName = xpp.name.toLowerCase()
+                when (eventType) {
 
+                    XmlPullParser.START_TAG -> {
+                        Log.d(TAG,"parse: Starting tag for " + tagName)
+                        if (tagName == "entry") {
+                            inEntry = true
+                        }
+                    }
+
+                    XmlPullParser.TEXT -> textValue = xpp.text
+
+                    XmlPullParser.END_TAG -> {
+                        Log.d(TAG, "parse Ending tag for " + tagName)
+                        if (inEntry){
+                            when(tagName){
+                                "entry" -> {
+                                    applications.add(currentRecord)
+                                    inEntry = false
+                                    currentRecord = FeedEntry()
+                                }
+
+                                "name" -> currentRecord.name = textValue
+                                "artist" -> currentRecord.artist = textValue
+                                "releasedata" -> currentRecord.releaseData = textValue
+                                "summary" -> currentRecord.summary = textValue
+                                "image" -> currentRecord.imageURL = textValue
+                            }
+                        }
+                    }
+                }
+                eventType = xpp.next()
+            }
+
+            for (app in applications) {
+                Log.d(TAG, "*************************")
+                Log.d(TAG, app.toString())
             }
         }catch (e: Exception){
             e.printStackTrace()
