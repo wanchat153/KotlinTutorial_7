@@ -12,7 +12,6 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 import java.security.cert.CertPath
-import kotlin.Exception
 
 class MainActivity : AppCompatActivity() {
 
@@ -78,8 +77,11 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "downloadXML: Invalid URL ${e.message}")
                 }catch (e: IOException){
                     Log.d(TAG, "downloadXML: IO Exception reading data: ${e.message}")
-//                }catch (e: Exception){
-//                    Log.d(TAG, "Unknown error: ${e.message}")
+                }catch (e: SecurityException){
+                    e.printStackTrace()
+                    Log.d(TAG, "downloadXML: Security exception. Needs permission? ${e.message}")
+                }catch (e: Exception){
+                    Log.d(TAG, "Unknown error: ${e.message}")
                 }
                 return ""
             }
